@@ -37,7 +37,8 @@ keep_keys_list = [
         "tier_item_data",
         "*",
         [
-            "human_name" "machine_name",
+            "human_name",
+            "machine_name",
             "youtube_link",
             "callout",
             "publishers",
