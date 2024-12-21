@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: humble_data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 4s
+      timeout: 10s
+      retries: 10
+
+  data-load:
+    build:
+      context: .
+      dockerfile: ./containers/data-load/Dockerfile
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: humble_data
+    volumes:
+      - ./data:/app/data
+      - ./.vector_cache:/vector_cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: ./containers/app/Dockerfile
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: humble_data
+    env_file:
+      - .env
+    depends_on:
+      data-load:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:

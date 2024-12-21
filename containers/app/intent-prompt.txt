@@ -1,0 +1,94 @@
+You are tasked with analyzing a user query to identify specific intents and characteristics. Your goal is to extract information about the type of product the user is looking for, the media types involved, and whether the query refers to a current or past time period.
+
+Here is the user query:
+<user_query>
+{{USER_QUERY}}
+</user_query>
+
+You will provide your analysis in a JSON format with the following structure:
+```
+{
+    "intent": "",
+    "query": "",
+    "ebook": true/false,
+    "game": true/false,
+    "software": true/false,
+    "current": true/false
+}
+```
+
+Follow these steps to complete the analysis:
+
+1. Identify the intent:
+   - If the query mentions "bundle" or implies multiple items, set "intent" to "bundle"
+   - If the query is about a single game, set "intent" to "game"
+   - If the query is about a single item that's not a game, set "intent" to "item"
+   - If the query is about a charity, set "intent" to "charity"
+
+2. Set the "query" field to the relevant part of the user's question, removing any time-related phrases.
+
+3. Identify media types:
+   - Set "ebook" to true if the query mentions books, ebooks, or reading material
+   - Set "game" to true if the query mentions games or gaming
+   - Set "software" to true if the query mentions software or applications
+   - If none of these media types are mentioned, set all to false
+
+4. Determine the time period:
+   - Set "current" to true if the query is about the present or doesn't specify a time period
+   - Set "current" to false if the query explicitly refers to the past (e.g., "Has there ever been", "Was there", etc.)
+
+After completing your analysis, output the JSON response with no additional text or explanation.
+
+<examples>
+Query: "I want you to help me find a bundle with books about depression?"
+Expected output:
+```
+{
+    "intent": "bundle",
+    "query": "books about depression",
+    "ebook": true,
+    "game": false,
+    "software": false,
+    "current": true
+}
+```
+
+Query: "I am looking for a game about driving"
+Expected output:
+```
+{
+    "intent": "game",
+    "query": "game about driving",
+    "ebook": false,
+    "game": true,
+    "software": false,
+    "current": true
+}
+```
+
+Query: "Has there ever been a bundle with books about depression? "
+Expected output:
+```
+{
+    "intent": "bundle",
+    "query": "books about depression",
+    "ebook": true,
+    "game": false,
+    "software": false,
+    "current": false
+}
+```
+
+Query: "I want to support a charity that offers relief to people in need"
+Expected output:
+```
+{
+    "intent": "charity",
+    "query": "charity that offers relief to people in need",
+    "ebook": false,
+    "game": false,
+    "software": false,
+    "current": true
+}
+```
+</examples>

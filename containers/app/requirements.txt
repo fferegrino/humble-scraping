@@ -1,0 +1,5 @@
+psycopg2-binary==2.9.10  
+sentence-transformers==3.3.1
+streamlit==1.41.1
+pandas==2.2.3
+anthropic==0.43.1

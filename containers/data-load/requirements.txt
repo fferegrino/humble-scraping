@@ -1,0 +1,4 @@
+sqlmodel==0.0.22
+pgvector==0.3.6
+psycopg2-binary==2.9.10  
+sentence-transformers==3.3.1
