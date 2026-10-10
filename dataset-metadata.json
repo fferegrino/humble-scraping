@@ -1,0 +1,17 @@
+{
+    "title": "Humble Bundle Bundles",
+    "subtitle": "Every bundle listed on humblebundle.com, scraped daily since late 2024",
+    "description": "Every bundle listed on the [Humble Bundle](https://www.humblebundle.com/bundles) bundles page, scraped daily since December 2024 (the first file holds bundles that started in October 2024 and were still on sale).\n\nThere is one JSON Lines file per month, `bundles-YYYY-MM.jsonl`, holding the bundles that started that month. Each line is one bundle, identified by `machine_name`:\n\n- `author`, `basic_data`: name, marketing blurbs, media type, description and end time of the bundle.\n- `tier_item_data`: the items in the bundle keyed by their machine name, with publishers, developers, MSRP, minimum price, ratings and descriptions.\n- `charity_data.charity_items`: the charities the bundle supports.\n- `from_bundle`: the entry on the bundles listing, with its start and end dates and URL.\n- `first_seen_at|datetime`, `updated_at|datetime`: when the scraper first saw the bundle and when it last saw it change.\n\nA bundle is updated in place while it stays on the listing, so files for recent months change from day to day.\n\nThe code that builds it lives at https://github.com/fferegrino/humble-scraping. Also available on Hugging Face: https://huggingface.co/datasets/feregrino/humble-scraping\n\nBundle names, descriptions and artwork links belong to Humble Bundle and the respective publishers.",
+    "id": "ioexception/humble-scraping",
+    "licenses": [
+        {
+            "name": "other"
+        }
+    ],
+    "keywords": [
+        "Games",
+        "Video Games",
+        "Books",
+        "Software"
+    ]
+}
