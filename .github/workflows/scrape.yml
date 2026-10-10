@@ -1,36 +1,53 @@
-name: "Daily scrape"
-
-run-name: Daily scrape by @${{ github.actor }}
+name: Daily scrape
 
 on:
   workflow_dispatch:
+    inputs:
+      source:
+        description: Where to read the current dataset from
+        type: choice
+        options: [huggingface, kaggle]
+        default: huggingface
   schedule:
   - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-scrape
+  cancel-in-progress: false
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v7
+    - uses: fferegrino/dataset-sync/fetch@v1
+      with:
+        # Scheduled runs have no inputs, so they always read from Hugging Face.
+        from: ${{ inputs.source || 'huggingface' }}
+        huggingface-dataset: feregrino/humble-scraping
+        kaggle-dataset: ioexception/humble-bundles
+        kaggle-username: ioexception
+        kaggle-key: ${{ secrets.KAGGLE_KEY }}
     - name: Set up Python 3.12
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v7
       with:
         python-version: "3.12"
-
-    - name: Install dependencies
+    - name: Scrape bundles
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip==26.2.1
         pip install -r requirements.txt
-
-    - name: Execute
-      run: python humblebundle.py
-
-    - name: Commit changes
-      run: |
-        git config --global user.email "antonio.feregrino+datasets@gmail.com"
-        git config --global user.name "Antonio Feregrino"
-        git add data/
-        git diff --staged --quiet || git commit -m 'New entries'
-        git push
+        python humblebundle.py
+    # No append-only: bundles still on sale are updated in place in their month's file.
+    - uses: fferegrino/dataset-sync/publish@v1
+      with:
+        huggingface-dataset: feregrino/humble-scraping
+        huggingface-card: dataset-card.md
+        kaggle-dataset: ioexception/humble-bundles
+        kaggle-metadata: dataset-metadata.json
+        huggingface-token: ${{ secrets.HF_TOKEN }}
+        kaggle-username: ioexception
+        kaggle-key: ${{ secrets.KAGGLE_KEY }}
