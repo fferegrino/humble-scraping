@@ -29,7 +29,7 @@ jobs:
         # Scheduled runs have no inputs, so they always read from Hugging Face.
         from: ${{ inputs.source || 'huggingface' }}
         huggingface-dataset: feregrino/humble-scraping
-        kaggle-dataset: ioexception/humble-bundles
+        kaggle-dataset: ioexception/humble-scraping
         kaggle-username: ioexception
         kaggle-key: ${{ secrets.KAGGLE_KEY }}
     - name: Set up Python 3.12
@@ -46,7 +46,7 @@ jobs:
       with:
         huggingface-dataset: feregrino/humble-scraping
         huggingface-card: dataset-card.md
-        kaggle-dataset: ioexception/humble-bundles
+        kaggle-dataset: ioexception/humble-scraping
         kaggle-metadata: dataset-metadata.json
         huggingface-token: ${{ secrets.HF_TOKEN }}
         kaggle-username: ioexception
